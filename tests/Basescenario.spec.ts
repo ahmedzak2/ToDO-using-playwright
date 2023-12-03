@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 import {faker} from '@faker-js/faker';
+import user from '../models/createuser';
+import User from '../models/createuser';
 async function clickLinkByText(page: any, linkText: string): Promise<void> {
   try {
     const linkSelector = `text=${linkText}`;
@@ -12,6 +14,7 @@ async function clickLinkByText(page: any, linkText: string): Promise<void> {
 }
 async function registerUser(page: any): Promise<void> {
   const { fakeUserFirstname, fakeUserLastname, fakeEmail, fakePassword } = generateFakeRegistrationData();
+
   await page.goto('/login');
   await clickLinkByText(page, 'Create a new Account');
   const inputFirstName = '[data-testid="first-name"]';
@@ -41,12 +44,12 @@ async function registerUserByAPI(page: any, request: any, context: any): Promise
       password: fakePassword
     }
   });
-
+/*
   if (response.status() !== 200) {
     console.error(`Error registering user via API. Status: ${response.status()}`);
     return { access_token: '', userID: '', firstName: '' }; // Return an empty object or handle the error accordingly
   }
-
+*/
   const responseBody = await response.json();
   const access_token = responseBody.access_token;
   const userID = responseBody.userID;
@@ -57,6 +60,17 @@ async function registerUserByAPI(page: any, request: any, context: any): Promise
   return { access_token, userID, firstName };
 }
 
+async function createToDOByAPI(page: any, request: any, linkText: string, access_token: string): Promise<void> {
+  const responseCreate = await request.post('/api/v1/tasks', {
+    data: {
+      "isCompleted": false,
+      "item": linkText,
+    },
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+}
 
 test('User should be able to register to our application BY API', async ({ page ,request,context}) => {
   
@@ -88,7 +102,7 @@ const welcomeText = await page.locator('[data-testid="welcome"]');
 });
 test('User should be able to register to our application a', async ({ page ,request,context}) => {
   
-  const { access_token, userID, firstName } = await registerUserByAPI(page, request, context);
+const { access_token, userID, firstName } = await registerUserByAPI(page, request, context);
   await page.pause();
   await page.goto('/todo');  
   await page.pause();
@@ -149,7 +163,6 @@ await page.pause();
     // Use the appropriate expectations based on your application's behavior.
   });
 test('User should be able to register2 to our application', async ({ page ,request}) => {
-  
   await registerUser(page);
     const welcomeText = await page.locator('[data-testid="welcome"]');
   
@@ -172,5 +185,8 @@ export const generateFakeRegistrationData = () => {
     fakeEmail,
   };
 };
-export { registerUser };
+
+
+
+export { registerUser,registerUserByAPI ,createToDOByAPI,clickLinkByText};
 
