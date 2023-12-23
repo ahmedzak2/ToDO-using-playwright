@@ -39,7 +39,7 @@ screenshot:'on'
     {
       name: 'chromium',
       use: {
-        headless : false,
+        headless : true,
         ...devices['Desktop Chrome']
         },
     },
