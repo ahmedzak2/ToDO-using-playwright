@@ -1,6 +1,6 @@
 // Basescenario.spec.ts
 import { test, expect } from '@playwright/test';
-import { registerUser, generateFakeRegistrationData ,registerUserByAPI,createToDOByAPI} from './Basescenario.spec';
+import { registerUser, generateFakeRegistrationData ,registerUserByAPI,createToDOByAPI} from './Basescenario';
 
 // Your imports...
 
@@ -18,22 +18,6 @@ async function Login(page: any): Promise<void> {
   await page.click(loginButton);
 }
 
-test("User should be able to create ToDo", async ({ page }) => {
-  await registerUser(page); // No need to pass any data
-
-  const addButton = '[data-testid="add"]';
-  const newTodo = '[data-testid="new-todo"]';
-  const createItem = '[data-testid="submit-newTask"]';
-  const toDoListItem = await page.locator('[data-testid="todo-item"]').first();
-
-  await page.click(addButton);
-  await page.fill(newTodo, 'firstCases for siller killer');
-  await page.click(createItem);
-  await page.waitForTimeout(20000);
-
-  const textContent = await toDoListItem?.innerText();
-  expect(textContent).toEqual('firstCases for siller killer');
-});
 
 test("User should be able to delete ToDo", async ({ page }) => {
   await Login(page); // No need to pass any data
@@ -45,9 +29,9 @@ test.describe('user create to do and delete by using api', () => {
   
   test("User should be able to create ToDo", async ({ page,request, context }) => {
     const { access_token, userID, firstName } = await registerUserByAPI(page, request, context);  
-    await page.pause();
+   // await page.pause();
     await page.goto('/todo/new');  
-    await page.pause();
+    //await page.pause();
   const newTodo = '[data-testid="new-todo"]';
   const createItem = '[data-testid="submit-newTask"]';
   const toDoListItem = await page.locator('[data-testid="todo-item"]').first();
@@ -83,10 +67,10 @@ test("User should be able to delete ToDo by apis ", async ({ page ,request, cont
   await createToDOByAPI(page,request,"firstCases for siller killer",access_token);
 
 
-  await page.pause();
+  //await page.pause();
   await page.goto('/todo');  
 
-  await page.pause();
+  //await page.pause();
 
   const toDoListItem = await page.locator('[data-testid="todo-item"]').first();
   const textContent = await toDoListItem?.innerText();

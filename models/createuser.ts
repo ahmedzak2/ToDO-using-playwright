@@ -1,4 +1,4 @@
-import { th } from "@faker-js/faker";
+import { faker, th } from "@faker-js/faker";
 
 export default class User{
 
@@ -6,16 +6,16 @@ export default class User{
     private lastName :string
     private Email :string
     private password : string
+    private accesToken :string
+    private userID :string
 constructor(
-    fristName:string, 
-    lastName:string , 
-    email:string, 
-    password:string
+
+
     ) {
-    this.firstName=fristName;
-    this.lastName=lastName;
-    this.Email=email;
-    this.password=password;
+    this.firstName=faker.person.firstName();
+    this.lastName=faker.person.lastName();
+    this.Email=    faker.internet.email();
+    this.password=faker.internet.password();
 }
  getFirstNAme(){
     return  this.firstName;
@@ -29,5 +29,17 @@ getEmail(){
 
  getPassword(){
     return  this.password;
+}
+getAccesToken(){
+    return this.accesToken;
+}
+setAccessToken(access:string){
+this.accesToken=access;
+}
+getUserID(){
+    return this.userID;
+}
+setUserID(userId:string){
+    this.userID=userId;
 }
 }
