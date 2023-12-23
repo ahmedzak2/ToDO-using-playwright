@@ -18,6 +18,21 @@ jobs:
         run: npx playwright test
         continue-on-error: true
 
+      - name: Check if gh-pages branch exists
+        id: check_branch
+        run: |
+          if git ls-remote --heads origin gh-pages; then
+            echo "gh-pages branch exists"
+            echo "::set-output name=exists::true"
+          else
+            echo "gh-pages branch does not exist"
+            echo "::set-output name=exists::false"
+          fi
+
+      - name: Create gh-pages branch
+        if: steps.check_branch.outputs.exists == 'false'
+        run: git checkout -b gh-pages && git push origin gh-pages
+
       - name: Get Allure history
         uses: actions/checkout@v2
         with:
