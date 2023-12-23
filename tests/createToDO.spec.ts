@@ -1,6 +1,7 @@
 // Basescenario.spec.ts
 import { test, expect } from '@playwright/test';
 import { registerUser, generateFakeRegistrationData ,registerUserByAPI,createToDOByAPI} from './Basescenario';
+import { TIMEOUT } from 'dns';
 
 // Your imports...
 
@@ -17,18 +18,34 @@ async function Login(page: any): Promise<void> {
   await page.fill(inputPassword, fakePassword);
   await page.click(loginButton);
 }
-  
+
 test.describe('user create to do and delete by using api', () => {
   
   test("User should be able to create ToDo", async ({ page,request, context }) => {
     const { access_token, userID, firstName } = await registerUserByAPI(page, request, context);  
    // await page.pause();
     await page.goto('/todo/new');  
-    //await page.pause();
+    await context.addCookies([
+      {
+        name: "access_token",
+        value: access_token,
+        url: "https://qacart-todo.herokuapp.com",
+      },
+      {
+        name: "firstName",
+        value: firstName,
+        url: "https://qacart-todo.herokuapp.com",
+      },
+      {
+        name: "userID",
+        value: userID,
+        url: "https://qacart-todo.herokuapp.com",
+      },
+  
+    ])
   const newTodo = '[data-testid="new-todo"]';
   const createItem = '[data-testid="submit-newTask"]';
   const toDoListItem = await page.locator('[data-testid="todo-item"]').first();
-
   await page.fill(newTodo, 'firstCases for siller killer');
   await page.click(createItem);
   await page.waitForTimeout(20000);

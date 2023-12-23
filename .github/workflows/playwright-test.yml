@@ -16,10 +16,10 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         run: npx playwright test
+        continue-on-error: true
 
       - name: Get Allure history
         uses: actions/checkout@v2
-        continue-on-error: true
         with:
           ref: gh-pages
           path: gh-pages
@@ -36,6 +36,6 @@ jobs:
       - name: Deploy report to Github Pages
         uses: peaceiris/actions-gh-pages@v2
         env:
-          PERSONAL_TOKEN: ${{ secrets.TOKEN }}
+          PERSONAL TOKEN: ${{ secrets.TOKEN }}
           PUBLISH_BRANCH: gh-pages
           PUBLISH_DIR: allure-history
