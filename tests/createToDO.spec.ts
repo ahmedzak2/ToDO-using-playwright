@@ -17,14 +17,7 @@ async function Login(page: any): Promise<void> {
   await page.fill(inputPassword, fakePassword);
   await page.click(loginButton);
 }
-
-
-test("User should be able to delete ToDo", async ({ page }) => {
-  await Login(page); // No need to pass any data
-
-  const deleteButton = await page.locator('[data-testid="delete"]').first();
-  await deleteButton.click();
-});
+  
 test.describe('user create to do and delete by using api', () => {
   
   test("User should be able to create ToDo", async ({ page,request, context }) => {
