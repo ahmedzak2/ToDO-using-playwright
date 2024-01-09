@@ -19,13 +19,14 @@ jobs:
         continue-on-error: true
 
       - name: Check if gh-pages branch exists
-        id: check_branch
         run: |
-          echo "exists=$(git ls-remote --heads origin gh-pages && echo 'true' || echo 'false')" >> $GITHUB_ENV
+          echo "exists=$(git ls-remote --heads origin gh-pages > /dev/null && echo 'true' || echo 'false')" >> $GITHUB_ENV
 
       - name: Create gh-pages branch
         if: env.exists == 'false'
-        run: git checkout -b gh-pages && git push origin gh-pages
+        run: |
+          git checkout -b gh-pages
+          git push origin gh-pages
 
       - name: Get Allure history
         uses: actions/checkout@v2
