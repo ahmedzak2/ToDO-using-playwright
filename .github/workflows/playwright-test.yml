@@ -21,16 +21,10 @@ jobs:
       - name: Check if gh-pages branch exists
         id: check_branch
         run: |
-          if git ls-remote --heads origin gh-pages; then
-            echo "gh-pages branch exists"
-            echo "::set-output name=exists::true"
-          else
-            echo "gh-pages branch does not exist"
-            echo "::set-output name=exists::false"
-          fi
+          echo "exists=$(git ls-remote --heads origin gh-pages && echo 'true' || echo 'false')" >> $GITHUB_ENV
 
       - name: Create gh-pages branch
-        if: steps.check_branch.outputs.exists == 'false'
+        if: env.exists == 'false'
         run: git checkout -b gh-pages && git push origin gh-pages
 
       - name: Get Allure history
@@ -51,6 +45,6 @@ jobs:
       - name: Deploy report to Github Pages
         uses: peaceiris/actions-gh-pages@v2
         env:
-          PERSONAL TOKEN: ${{ secrets.TOKEN }}
+          PERSONAL_TOKEN: ${{ secrets.TOKEN }}
           PUBLISH_BRANCH: gh-pages
           PUBLISH_DIR: allure-history
